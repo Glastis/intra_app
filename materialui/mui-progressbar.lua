@@ -82,6 +82,14 @@ function M.setProgressBarProperty(name, options)
     end
 end
 
+function M.destroyProgressBar(name)
+    muiData.widgetDict[name]["progressbackdrop"]:setStrokeColor( unpack({0,0,0,0}) )
+    muiData.widgetDict[name]["progressbar"]:setStrokeColor( unpack({0,0,0,0}) )
+    muiData.widgetDict[name]["label"].text = ''
+    muiData.widgetDict[name]["progressbar"].percentComplete = 0
+    muiData.widgetDict[name]["progressbar"].callBack = nil
+end
+
 function M.newProgressBar(options)
     if options == nil then return end
 

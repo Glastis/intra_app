@@ -94,9 +94,23 @@ local function debug_info(more, calltrace)
 end
 utilities.debug_info = debug_info
 
-local function var_dump(var, printval, depth)
-    if depth == nil then
-        depth = 1000
+local function var_dump_indent(depth)
+    local ret
+
+    ret = ''
+    while depth > 0 do
+        ret = ret .. '  '
+        depth = depth - 1
+    end
+    return ret
+end
+
+local function var_dump(var, printval, max_depth, cur_depth)
+    if max_depth == nil then
+        max_depth = 1000
+    end
+    if not cur_depth then
+        cur_depth = 0
     end
     if type(var) == 'table' then
         local s
@@ -106,16 +120,16 @@ local function var_dump(var, printval, depth)
             if type(k) ~= 'number' then
                 k = '"' .. k .. '"'
             end
-            if depth > 0 then
-                s = s .. '\n[' .. k .. '] = ' .. var_dump(v, false, depth - 1) .. ','
+            if max_depth > 0 then
+                s = s .. '\n' .. var_dump_indent(cur_depth) .. '[' .. k .. '] = ' .. var_dump(v, false, max_depth - 1, cur_depth + 1) .. ','
             else
-                s = s .. '\n[' .. k .. '] = ' .. tostring(v) .. ','
+                s = s .. '\n' .. var_dump_indent(cur_depth) .. '[' .. k .. '] = ' .. tostring(v) .. ','
             end
         end
         if printval then
             print(tostring(s .. '\n}'))
         end
-        return s .. '\n} '
+        return s .. '\n' .. var_dump_indent(cur_depth - 1) .. '} '
     end
     if printval then
         print(tostring(var))

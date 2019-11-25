@@ -10,6 +10,5 @@ _mui_debug = true
 
 local composer = require "composer"
 
-composer.gotoScene("views.modules")
---composer.gotoScene("views.profile")
+composer.gotoScene("views.login")
 --composer.gotoScene("menu_old")

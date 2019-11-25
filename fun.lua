@@ -20,8 +20,8 @@ local muiData = require( "materialui.mui-data" )
 -- forward declarations and other locals
 local screenW, screenH, halfW = display.contentWidth, display.contentHeight, display.contentWidth*0.5
 
-local background = nil
-local scrollView = nil
+local background
+local scrollView
 
 local function destroyDemoText( demoText )
     mui.debug("destroyDemoText called")

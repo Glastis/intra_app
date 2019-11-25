@@ -28,26 +28,57 @@ local function fill_module_list_part_column(columns, text, id, align)
 
 end
 
+local function get_url_from_module(module)
+    local url
+
+    url = 'https://intra.epitech.eu/module/'
+    if module.scolaryear then
+        url = url .. module.scolaryear
+    else
+        url = url .. '2019'
+    end
+    url = url .. '/' .. module.code .. '/' .. module.codeinstance .. '/'
+    return url
+end
+
+local function module_onclick(data)
+    local value
+
+    value = mui.getEventParameter(data, "muiTargetValue")
+    if value ~= nil then
+        system.openURL(value)
+    end
+end
+
 local function fill_module_list_part(list, module_part, color)
     local i
     local columns
 
     i = 1
-    url = '/module/' . (isset($module['scolaryear']) ? $module['scolaryear'] : '2019') . '/' . $module['code'] . '/' . $module['codeinstance'] . '/';
     while module_part[i] do
         columns = {}
-        fill_module_list_part_column(columns, module_part[i].title, module_part[i].id, 'right')
+        fill_module_list_part_column(columns, '  ' .. module_part[i].title, module_part[i].id, 'left')
         if tonumber(module_part[i].credits) > 1 then
             fill_module_list_part_column(columns, module_part[i].credits .. " crédits", module_part[i].id, 'center')
         else
             fill_module_list_part_column(columns, module_part[i].credits .. " crédit", module_part[i].id, 'center')
         end
         if module_part[i].seat_free then
-            fill_module_list_part_column(columns, module_part[i].seat_taken .. '/' .. module_part[i].seat_free .. " places", module_part[i].id, 'left')
+            fill_module_list_part_column(columns, module_part[i].seat_taken .. '/' .. module_part[i].seat_free .. " places", module_part[i].id, 'right')
         else
-            fill_module_list_part_column(columns, module_part[i].seat_taken .. ' inscrits', module_part[i].id, 'left')
+            fill_module_list_part_column(columns, module_part[i].seat_taken .. ' inscrits', module_part[i].id, 'right')
         end
-        list[#list + 1] = { key = module_part[i].id, text = module_part[i].title, value = module_part[i].id, isCategory = false, fillColor = color, columns = columns, fontSize = 10, lineColor = views.background_color, url =  }
+
+        list[#list + 1] = {
+            key = module_part[i].id,
+            text = module_part[i].title,
+            value = get_url_from_module(module_part[i]),
+            isCategory = false,
+            fillColor = color,
+            columns = columns,
+            fontSize = 10,
+            lineColor = views.background_color
+        }
         i = i + 1
     end
     return list
@@ -92,20 +123,19 @@ local function draw_module_list(mui, modules)
         rowHeight = 30,
 --         rowAnimation = false, -- turn on rowAnimation
         noLines = false,
-        callBackTouch = mui.onRowTouchDemo,
+        callBackTouch = module_onclick,
         callBackRender = mui.onRowRenderDemo,
         scrollListener = mui.scrollListener,  -- needed if using buttons, etc within the row!
-
+        noLines = true,
         list = fill_module_list(modules),
         columnOptions = {
-            widths = { 60, 60, 60 }, -- must supply each else "auto" is assumed.
+            widths = { 610, 100, 100 }, -- must supply each else "auto" is assumed.
         },
         categoryColor = { default = views.background_color },
         categoryLineColor = views.background_color,
         touchpointColor = { 0.4, 0.4, 0.4 },
     })
 end
-
 
 local function get_modules_callback(event)
     event.isError = false
@@ -129,8 +159,8 @@ local function get_module_list()
     params.headers["Content-Type"] = "application/json"
     params.headers["Accept"] = "application/json"
     params.headers["Authorization"] = "Bearer " .. token
-    network.request("https://google.com", "GET", get_modules_callback, params)
---    network.request("https://new.glastis.com/api/epitech/modules/get", "GET", get_modules_callback, params)
+--    network.request("https://google.com", "GET", get_modules_callback, params)
+    network.request("https://new.glastis.com/api/epitech/modules/get", "GET", get_modules_callback, params)
 end
 
 local function add_loading_bar()

@@ -13,6 +13,8 @@ views.LIST[#views.LIST + 1] = { key = "Mon profil", value = #views.LIST + 1, ico
 views.LIST[#views.LIST + 1] = { key = "Liste des modules", value = #views.LIST + 1, icon="view_list", labelText="Liste des modules", isActive = false, sceneName = "views.modules" }
 views.LIST[#views.LIST + 1] = { key = "Connexion/Déconnexion", value = #views.LIST + 1, icon="new_releases", labelText="Connexion/Déconnexion", isActive = false, sceneName = "views.login" }
 
+views.NAVBAR_HEIGHT = 40
+
 local function set_active_view(id)
     local i
 
@@ -51,6 +53,7 @@ local function menu_callback(data)
 
     if not views.LIST[data.index].isActive then
         mui = data.callBackData
+
         mui.actionSwitchScene({callBackData={
             sceneDestination=views.LIST[data.index].sceneName,
             titleBackgroundColor = get_color_ratio(51, 153, 255),
@@ -89,7 +92,7 @@ local function add_header(mui, search, refresh)
     mui.newNavbar({
         name = "navbar_demo",
         --width = mui.getScaleVal(500), -- defaults to display.contentWidth
-        height = 40,
+        height = views.NAVBAR_HEIGHT,
         left = 0,
         top = 0,
         fillColor = get_color_ratio(51, 145, 255),

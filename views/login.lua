@@ -54,17 +54,9 @@ function scene:create(event)
 
     local topInset, leftInset, bottomInset, rightInset = mui.getSafeAreaInsets()
 
-    local background = display.newRect(
-        display.screenOriginX + leftInset,
-        display.screenOriginY + topInset,
-        display.contentWidth - (leftInset + rightInset),
-        display.contentHeight - (topInset + bottomInset)
-    )
-    background:setFillColor(1)
-    background:translate(background.width*0.5, background.height*0.5)
-    sceneGroup:insert(background)
-
+    views.create_background(mui, sceneGroup)
     views.add_header(mui)
+
     mui.newTextField({
         parent = mui.getParent(),
         name = "login_user",
@@ -76,9 +68,10 @@ function scene:create(event)
         x = (display.contentWidth - (leftInset + rightInset)) / 2,
         y = (display.contentHeight - (topInset + bottomInset)) / 2 - 40,
         trimAtLength = 30,
+        fillColor = views.background_color,
         activeColor = { 0, 0, 0, 1 },
         inactiveColor = { 0.5, 0.5, 0.5, 1 },
-        callBack = mui.textfieldCallBack
+        callBack = email_callback
     })
 
     mui.newTextField({
@@ -92,9 +85,10 @@ function scene:create(event)
         height = 26,
         x = (display.contentWidth - (leftInset + rightInset)) / 2,
         y = (display.contentHeight - (topInset + bottomInset)) / 2 + 10,
+        fillColor = views.background_color,
         activeColor = { 0, 0, 0, 1 },
         inactiveColor = { 0.5, 0.5, 0.5, 1 },
-        callBack = email_callback
+        callBack = pass_callback
     })
 
     local showToast = function()
@@ -119,13 +113,13 @@ function scene:create(event)
     mui.newRoundedRectButton({
         name = "login_submit",
         text = "Connexion",
-        width = 100,
+        width = 150,
         height = 30,
         x = (display.contentWidth - (leftInset + rightInset)) / 2,
         y = (display.contentHeight - (topInset + bottomInset)) / 2 + 80,
         font = native.systemFont,
-        textColor = { 1, 1, 1, 1 },
-        fillColor = { 0.63, 0.81, 0.181 },
+        textColor = views.background_color,
+        fillColor = views.get_color_ratio(51, 153, 255),
         radius = 10,
         callBack = showToast
     })
